@@ -11,6 +11,7 @@ import org.apache.cayenne.query.ObjectSelect;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import concurrencytest.data.Address;
 import concurrencytest.data.Person;
 
 public class Main {
@@ -49,7 +50,7 @@ public class Main {
         public void onPostCommit( ObjectContext originatingContext, ChangeMap changes ) {
             new Thread( () -> {
                 ObjectSelect
-                        .query( Person.class )
+                        .query( Address.class )
                         .select( newContext() );
             } ).start();
         }
