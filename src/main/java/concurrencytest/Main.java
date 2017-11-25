@@ -1,7 +1,5 @@
 package concurrencytest;
 
-import org.apache.cayenne.Cayenne;
-import org.apache.cayenne.DataObject;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.commitlog.CommitLogModule;
@@ -32,9 +30,7 @@ public class Main {
             config.setJdbcUrl( "jdbc:postgresql://localhost:5432/concurrency_test" );
             config.setUsername( "postgres" );
             config.setAutoCommit( false );
-
-            HikariDataSource dataSource = new HikariDataSource( config );
-            srtBuilder = srtBuilder.dataSource( dataSource );
+            srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
 
             _serverRuntime = srtBuilder.build();
         }
@@ -70,13 +66,10 @@ public class Main {
 
             for( ObjectChange objectChange : changes.getUniqueChanges() ) {
                 if( objectChange.getType() == ObjectChangeType.UPDATE ) {
-                    ObjectContext ctx = newContext();
-                    DataObject person = (DataObject)Cayenne.objectForPK( ctx, objectChange.getPostCommitId() );
-
                     new Thread( () -> {
-                        Person p = ctx.newObject( Person.class );
+                        Person p = newContext().newObject( Person.class );
                         p.setName( "Whoops!" );
-                        ctx.commitChanges();
+                        p.getObjectContext().commitChanges();
                     } ).start();
                 }
             }
