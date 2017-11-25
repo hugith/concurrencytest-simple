@@ -29,7 +29,6 @@ public class Main {
             if( useHikariCP ) {
                 HikariConfig config = new HikariConfig();
                 config.setJdbcUrl( "jdbc:h2:mem:concurrencytest" );
-                config.setDriverClassName( "org.h2.Driver" );
                 builder.dataSource( new HikariDataSource( config ) );
             }
 
