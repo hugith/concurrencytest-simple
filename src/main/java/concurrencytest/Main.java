@@ -22,8 +22,8 @@ public class Main {
                     .addConfig( "cayenne-concurrencytest.xml" )
                     .addModule( CommitLogModule.extend().addListener( AfterUpdateListener.class ).module() );
 
-            // Setting this to 'true' will make the CommitLogListener fail with:
-            // Transaction must have 'STATUS_ACTIVE' to add a connection. Current status: STATUS_COMMITTED Everything works fine when using the build in Cayenne pool
+            // Setting this to 'true' will make the CommitLogListener fail.
+            // Everything works fine when using a connection provided by Cayenne.
             boolean useHikariCP = true;
 
             if( useHikariCP ) {
