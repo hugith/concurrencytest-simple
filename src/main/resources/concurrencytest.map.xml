@@ -7,5 +7,5 @@
 	<db-entity name="person">
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
-	<obj-entity name="Person" className="concurrencytest.data.Person" dbEntityName="person"/>
+	<obj-entity name="Person" dbEntityName="person"/>
 </data-map>
