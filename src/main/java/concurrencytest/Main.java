@@ -8,12 +8,10 @@ import org.apache.cayenne.commitlog.model.ObjectChange;
 import org.apache.cayenne.commitlog.model.ObjectChangeType;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
-import org.apache.cayenne.query.SelectQuery;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import concurrencytest.data.Address;
 import concurrencytest.data.Person;
 
 public class Main {
@@ -27,11 +25,10 @@ public class Main {
                     .addModule( CommitLogModule.extend().addListener( AfterUpdateListener.class ).module() );
 
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl( "jdbc:postgresql://localhost:5432/concurrency_test" );
-            config.setUsername( "postgres" );
-            config.setAutoCommit( false );
-            srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
+            config.setJdbcUrl( "jdbc:h2:mem:old" );
+            config.setDriverClassName( "org.h2.Driver" );
 
+            srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
             _serverRuntime = srtBuilder.build();
         }
 
@@ -39,19 +36,11 @@ public class Main {
     }
 
     public static void main( String[] args ) {
-        deleteAll();
         ObjectContext oc = newContext();
         Person person = oc.newObject( Person.class );
         person.setName( "Person" );
         oc.commitChanges();
         person.setName( "Hugi Þórðarson" );
-        oc.commitChanges();
-    }
-
-    private static void deleteAll() {
-        ObjectContext oc = serverRuntime().newContext();
-        oc.deleteObjects( oc.select( new SelectQuery<>( Address.class ) ) );
-        oc.deleteObjects( oc.select( new SelectQuery<>( Person.class ) ) );
         oc.commitChanges();
     }
 
