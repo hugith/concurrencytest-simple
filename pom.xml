@@ -6,7 +6,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>concurrencytest-simple</name>
 	<properties>
-		<cayenne.version>4.0.B3-SNAPSHOT</cayenne.version>
+		<cayenne.version>4.1.M1</cayenne.version>
 	</properties>
 	<build>
 		<plugins>
@@ -60,17 +60,12 @@
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>2.6.3</version>
+			<version>2.7.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.195</version>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.1.4</version>
 		</dependency>
 	</dependencies>
 </project>
