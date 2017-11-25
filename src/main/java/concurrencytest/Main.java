@@ -8,6 +8,7 @@ import org.apache.cayenne.commitlog.model.ObjectChange;
 import org.apache.cayenne.commitlog.model.ObjectChangeType;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
+import org.apache.cayenne.query.ObjectSelect;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -27,7 +28,7 @@ public class Main {
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl( "jdbc:h2:mem:old" );
             config.setDriverClassName( "org.h2.Driver" );
-
+            config.setAutoCommit( true );
             srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
             _serverRuntime = srtBuilder.build();
         }
@@ -56,9 +57,9 @@ public class Main {
             for( ObjectChange objectChange : changes.getUniqueChanges() ) {
                 if( objectChange.getType() == ObjectChangeType.UPDATE ) {
                     new Thread( () -> {
-                        Person p = newContext().newObject( Person.class );
-                        p.setName( "Whoops!" );
-                        p.getObjectContext().commitChanges();
+                        ObjectSelect
+                                .query( Person.class )
+                                .select( newContext() );
                     } ).start();
                 }
             }
