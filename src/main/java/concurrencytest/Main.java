@@ -42,13 +42,8 @@ public class Main {
     }
 
     public static void main( String[] args ) {
-        Person person = newContext().newObject( Person.class );
-        person.setName( "Person" );
+        Person person = serverRuntime().newContext().newObject( Person.class );
         person.getObjectContext().commitChanges();
-    }
-
-    public static ObjectContext newContext() {
-        return serverRuntime().newContext();
     }
 
     public static class AfterUpdateListener implements CommitLogListener {
@@ -58,7 +53,7 @@ public class Main {
             new Thread( () -> {
                 ObjectSelect
                         .query( Person.class )
-                        .select( newContext() );
+                        .select( serverRuntime().newContext() );
             }, "afterUpdateThread" ).start();
         }
     }
