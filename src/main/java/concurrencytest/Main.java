@@ -11,7 +11,6 @@ import org.apache.cayenne.query.ObjectSelect;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import concurrencytest.data.Address;
 import concurrencytest.data.Person;
 
 public class Main {
@@ -25,7 +24,7 @@ public class Main {
                     .addModule( CommitLogModule.extend().addListener( AfterUpdateListener.class ).module() );
 
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl( "jdbc:h2:mem:old" );
+            config.setJdbcUrl( "jdbc:h2:mem:concurrencytest" );
             config.setDriverClassName( "org.h2.Driver" );
             srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
             _serverRuntime = srtBuilder.build();
@@ -50,7 +49,7 @@ public class Main {
         public void onPostCommit( ObjectContext originatingContext, ChangeMap changes ) {
             new Thread( () -> {
                 ObjectSelect
-                        .query( Address.class )
+                        .query( Person.class )
                         .select( newContext() );
             } ).start();
         }

@@ -8,10 +8,10 @@
 		>
 		<map-ref name="concurrencytest"/>
 		<data-source>
-			<driver value="org.postgresql.Driver"/>
-			<url value="jdbc:postgresql://localhost:5432/concurrency_test"/>
+			<driver value="org.h2.Driver"/>
+			<url value="jdbc:h2:mem:concurrencytest"/>
 			<connectionPool min="1" max="1"/>
-			<login userName="postgres"/>
+			<login/>
 		</data-source>
 	</node>
 </domain>
