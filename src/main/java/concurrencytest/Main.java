@@ -15,6 +15,11 @@ import concurrencytest.data.Person;
 
 public class Main {
 
+    /**
+     * Setting this to 'true' will make the CommitLogListener fail with: Transaction must have 'STATUS_ACTIVE' to add a connection. Current status: STATUS_COMMITTED Everything works fine when using the build in Cayenne pool
+     */
+    private static final boolean useHikariCP = true;
+
     private static ServerRuntime _serverRuntime;
 
     private static ServerRuntime serverRuntime() {
@@ -23,10 +28,13 @@ public class Main {
                     .addConfig( "cayenne-concurrencytest.xml" )
                     .addModule( CommitLogModule.extend().addListener( AfterUpdateListener.class ).module() );
 
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl( "jdbc:h2:mem:concurrencytest" );
-            config.setDriverClassName( "org.h2.Driver" );
-            srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
+            if( useHikariCP ) {
+                HikariConfig config = new HikariConfig();
+                config.setJdbcUrl( "jdbc:h2:mem:concurrencytest" );
+                config.setDriverClassName( "org.h2.Driver" );
+                srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
+            }
+
             _serverRuntime = srtBuilder.build();
         }
 
@@ -51,7 +59,7 @@ public class Main {
                 ObjectSelect
                         .query( Person.class )
                         .select( newContext() );
-            } ).start();
+            }, "afterUpdateThread" ).start();
         }
     }
 }
