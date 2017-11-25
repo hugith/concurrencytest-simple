@@ -26,7 +26,6 @@ public class Main {
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl( "jdbc:h2:mem:old" );
             config.setDriverClassName( "org.h2.Driver" );
-            config.setAutoCommit( true );
             srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
             _serverRuntime = srtBuilder.build();
         }
@@ -35,10 +34,9 @@ public class Main {
     }
 
     public static void main( String[] args ) {
-        ObjectContext oc = newContext();
-        Person person = oc.newObject( Person.class );
+        Person person = newContext().newObject( Person.class );
         person.setName( "Person" );
-        oc.commitChanges();
+        person.getObjectContext().commitChanges();
     }
 
     public static ObjectContext newContext() {
