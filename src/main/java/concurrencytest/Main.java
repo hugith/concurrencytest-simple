@@ -4,8 +4,6 @@ import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.commitlog.CommitLogModule;
 import org.apache.cayenne.commitlog.model.ChangeMap;
-import org.apache.cayenne.commitlog.model.ObjectChange;
-import org.apache.cayenne.commitlog.model.ObjectChangeType;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.query.ObjectSelect;
@@ -41,8 +39,6 @@ public class Main {
         Person person = oc.newObject( Person.class );
         person.setName( "Person" );
         oc.commitChanges();
-        person.setName( "Hugi Þórðarson" );
-        oc.commitChanges();
     }
 
     public static ObjectContext newContext() {
@@ -53,16 +49,11 @@ public class Main {
 
         @Override
         public void onPostCommit( ObjectContext originatingContext, ChangeMap changes ) {
-
-            for( ObjectChange objectChange : changes.getUniqueChanges() ) {
-                if( objectChange.getType() == ObjectChangeType.UPDATE ) {
-                    new Thread( () -> {
-                        ObjectSelect
-                                .query( Person.class )
-                                .select( newContext() );
-                    } ).start();
-                }
-            }
+            new Thread( () -> {
+                ObjectSelect
+                        .query( Person.class )
+                        .select( newContext() );
+            } ).start();
         }
     }
 }
