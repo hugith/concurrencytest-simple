@@ -18,7 +18,7 @@ public class Main {
 
     private static ServerRuntime serverRuntime() {
         if( _serverRuntime == null ) {
-            ServerRuntimeBuilder srtBuilder = ServerRuntime.builder()
+            ServerRuntimeBuilder builder = ServerRuntime.builder()
                     .addConfig( "cayenne-concurrencytest.xml" )
                     .addModule( CommitLogModule.extend().addListener( AfterUpdateListener.class ).module() );
 
@@ -30,10 +30,10 @@ public class Main {
                 HikariConfig config = new HikariConfig();
                 config.setJdbcUrl( "jdbc:h2:mem:concurrencytest" );
                 config.setDriverClassName( "org.h2.Driver" );
-                srtBuilder = srtBuilder.dataSource( new HikariDataSource( config ) );
+                builder.dataSource( new HikariDataSource( config ) );
             }
 
-            _serverRuntime = srtBuilder.build();
+            _serverRuntime = builder.build();
         }
 
         return _serverRuntime;
